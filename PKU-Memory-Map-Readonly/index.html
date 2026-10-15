@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>北大记忆地图 · PKU Memory Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--ink:#24302d;--muted:#68736e;--paper:#f7f6f1;--accent:#315c4b;--line:#d9e0d8}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--paper)}
+header{padding:23px 24px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}.eyebrow{margin:0 0 6px;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--muted)}
+h1{margin:0;font-size:clamp(25px,4vw,38px);font-weight:650;letter-spacing:-.04em}.intro{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.7}.tag{border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--accent);font-size:12px;white-space:nowrap}
+#map{height:calc(100vh - 165px);min-height:460px;margin:0 16px 12px;border-radius:16px;overflow:hidden;border:1px solid #dfe3dc}footer{padding:0 24px 18px;color:var(--muted);font-size:11px;line-height:1.7}
+.leaflet-popup-content-wrapper{border-radius:14px}.leaflet-popup-content{margin:14px;width:245px!important}.popup-title{font-size:16px;font-weight:650;margin:0 0 6px}.popup-desc{color:#65716e;font-size:12px;line-height:1.65;margin:0 0 10px;white-space:pre-wrap}.popup-photo{display:block;width:100%;max-height:210px;object-fit:cover;border-radius:9px;background:#edf0ea}.photo-note{color:#7a837d;font-size:11px;line-height:1.5;margin-top:7px}
+@media(max-width:600px){header{padding:18px 15px 12px;align-items:flex-start;flex-direction:column}#map{height:68vh;min-height:410px;margin:0 8px 10px;border-radius:12px}footer{padding:0 15px 14px}}
+</style>
+</head>
+<body>
+<header><div><p class="eyebrow">A personal campus atlas</p><h1>北大记忆地图</h1><p class="intro">每一个标记，都是一段校园记忆。点击地图上的地点，查看照片与记录。</p></div><span class="tag">只读浏览 · Read-only</span></header>
+<div id="map" aria-label="北京大学记忆地图"></div>
+<footer>地图底图 © OpenStreetMap contributors。此页面仅供浏览，不能添加、编辑或删除地点。照片与文字由地图创建者提供。</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const places = [
+ {id:"place-1792062994630",name:"西侧门（内侧）",coords:[39.99167063677312,116.29864096641542],photo:"photos/xicemen.jpg",description:"彭米儿在10月15日标记了西侧门（内侧）✌️"},
+ {id:"place-1792063238016",name:"国际关系学院",coords:[39.99057739891809,116.30045950412752],photo:"photos/guojiguanxixueyuan.jpg",description:"彭米儿在10月15日标记了国际关系学院✌️"},
+ {id:"place-1792063309448",name:"博雅塔",coords:[39.992620013346155,116.30579173564912],photo:"photos/boya-tower.jpg",description:"彭米儿在10月15日标记了博雅塔✌️"}
+];
+const map=L.map('map').setView([39.9917,116.3025],16);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>'}).addTo(map);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+places.forEach(p=>{const photo=`<img class="popup-photo" src="${esc(p.photo)}" alt="${esc(p.name)}照片" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="photo-note" style="display:none">照片暂时无法显示。</div>`;L.marker(p.coords).addTo(map).bindPopup(`<div><p class="popup-title">${esc(p.name)}</p><p class="popup-desc">${esc(p.description)}</p>${photo}</div>`)});
+const bounds=L.latLngBounds(places.map(p=>p.coords));map.fitBounds(bounds.pad(0.22));
+</script>
+</body></html>
